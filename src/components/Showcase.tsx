@@ -95,7 +95,7 @@ const Showcase = () => {
     <section
       id="work"
       ref={ref}
-      className="min-h-screen bg-black pt-20 pb-32 px-8 relative overflow-hidden"
+      className="min-h-screen bg-black pt-32 pb-32 px-8 relative overflow-hidden"
     >
       {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -123,7 +123,7 @@ const Showcase = () => {
           initial={{ opacity: 0, y: 100 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="text-center mb-24"
+          className="text-center mb-32"
         >
           <motion.div
             className="inline-block mb-8"
@@ -136,9 +136,11 @@ const Showcase = () => {
 
           <motion.h2
             className="text-8xl md:text-9xl lg:text-[12rem] font-black text-white mb-8 leading-[0.8] tracking-tight"
-            style={{ y, opacity }}
+            initial={{ opacity: 0, y: 50 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+            transition={{ duration: 1, delay: 0.4 }}
           >
-            <span className="block">CREATIVE</span>
+            <span className="block text-white">CREATIVE</span>
             <motion.span
               className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600"
               whileHover={{
