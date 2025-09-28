@@ -4,15 +4,15 @@ import { useRef, useState } from "react";
 
 const Showcase = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-200px" });
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"],
+    offset: ["start 0.8", "end 0.2"],
   });
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.3, 1, 0]);
 
   // Premium project data
   const projects = [
@@ -136,11 +136,9 @@ const Showcase = () => {
 
           <motion.h2
             className="text-8xl md:text-9xl lg:text-[12rem] font-black text-white mb-8 leading-[0.8] tracking-tight"
-            initial={{ opacity: 0, y: 50 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-            transition={{ duration: 1, delay: 0.4 }}
+            style={{ y, opacity }}
           >
-            <span className="block text-white">CREATIVE</span>
+            <span className="block">CREATIVE</span>
             <motion.span
               className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600"
               whileHover={{
