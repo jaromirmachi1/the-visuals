@@ -4,15 +4,19 @@ import { useRef, useState } from "react";
 
 const Showcase = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-200px" });
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.8", "end 0.2"],
+    offset: ["start end", "end start"],
   });
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.3, 1, 0]);
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.8, 1],
+    [0, 0.4, 1, 0.2]
+  );
 
   // Premium project data
   const projects = [
