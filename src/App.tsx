@@ -95,8 +95,9 @@ function App() {
             className="text-6xl md:text-8xl font-bold tracking-wider"
             style={{ fontFamily: isLoading ? "Fliege Mono" : "Bebas Neue" }}
             animate={{
-              fontSize: showAnimation ? "8rem" : "4rem",
-              letterSpacing: showAnimation ? "0.3em" : "0.1em",
+              fontSize: showAnimation ? "12rem" : "4rem",
+              letterSpacing: showAnimation ? "0.2em" : "0.1em",
+              fontWeight: showAnimation ? "900" : "700",
             }}
             transition={{
               duration: showAnimation ? 2 : 0,
