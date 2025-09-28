@@ -82,7 +82,7 @@ function App() {
       <motion.div
         className="fixed inset-0 flex items-center justify-center z-50"
         animate={{
-          y: showAnimation ? "50vh" : 0,
+          y: showAnimation ? "40vh" : 0,
         }}
         transition={{
           duration: showAnimation ? 2 : 0,
@@ -92,7 +92,7 @@ function App() {
       >
         <div className="text-white text-center">
           <motion.h1
-            className="text-6xl md:text-8xl font-light tracking-wider"
+            className="text-6xl md:text-8xl font-bold tracking-wider"
             style={{ fontFamily: isLoading ? "Fliege Mono" : "Bebas Neue" }}
             animate={{
               fontSize: showAnimation ? "8rem" : "4rem",
@@ -128,12 +128,14 @@ function App() {
             )}
           </motion.h1>
 
-          <motion.div
-            className="mt-8 text-sm tracking-widest opacity-60"
-            style={{ fontFamily: "Fliege Mono" }}
-          >
-            LOADING...
-          </motion.div>
+          {isLoading && (
+            <motion.div
+              className="mt-8 text-sm tracking-widest opacity-60"
+              style={{ fontFamily: "Fliege Mono" }}
+            >
+              LOADING...
+            </motion.div>
+          )}
         </div>
       </motion.div>
     </div>
