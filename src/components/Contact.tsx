@@ -28,7 +28,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="min-h-screen bg-black py-20 px-8">
+    <section id="contact" className="min-h-screen bg-black pt-20 pb-32 px-8">
       <div className="max-w-6xl mx-auto">
         <motion.div
           ref={ref}

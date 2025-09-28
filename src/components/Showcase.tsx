@@ -95,7 +95,7 @@ const Showcase = () => {
     <section
       id="work"
       ref={ref}
-      className="min-h-screen bg-black py-32 px-8 relative overflow-hidden"
+      className="min-h-screen bg-black pt-20 pb-32 px-8 relative overflow-hidden"
     >
       {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden">
