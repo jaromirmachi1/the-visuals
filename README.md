@@ -30,7 +30,7 @@ A modern, responsive React application built with TypeScript, Vite, and Tailwind
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/the-visuals.git
+git clone https://github.com/jaromirmachi1/the-visuals.git
 cd the-visuals
 ```
 
