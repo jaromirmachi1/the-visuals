@@ -27,7 +27,7 @@ const Hero = () => {
     <section
       id="home"
       ref={heroRef}
-      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black pb-0"
+      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black pb-20"
       style={{
         background: `
           radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(255, 106, 0, 0.15) 0%, transparent 50%),

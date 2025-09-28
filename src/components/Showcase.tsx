@@ -99,7 +99,7 @@ const Showcase = () => {
     <section
       id="work"
       ref={ref}
-      className="min-h-screen bg-black pt-32 pb-32 px-8 relative overflow-hidden"
+      className="min-h-screen bg-black pt-20 pb-32 px-8 relative overflow-hidden"
     >
       {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -127,7 +127,7 @@ const Showcase = () => {
           initial={{ opacity: 0, y: 100 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="text-center mb-32"
+          className="text-center mb-24"
         >
           <motion.div
             className="inline-block mb-8"
