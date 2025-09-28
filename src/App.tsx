@@ -81,14 +81,12 @@ function App() {
       {/* Single "The Visuals" text that animates */}
       <motion.div
         className="fixed inset-0 flex items-center justify-center z-50"
-        initial={{ opacity: 0, y: 20 }}
         animate={{
-          opacity: 1,
           y: showAnimation ? "50vh" : 0,
         }}
         transition={{
-          duration: showAnimation ? 2 : 0.8,
-          ease: showAnimation ? "easeInOut" : "easeOut",
+          duration: showAnimation ? 2 : 0,
+          ease: showAnimation ? "easeInOut" : "linear",
           delay: showAnimation ? 0.5 : 0,
         }}
       >
@@ -96,15 +94,13 @@ function App() {
           <motion.h1
             className="text-6xl md:text-8xl font-light tracking-wider"
             style={{ fontFamily: isLoading ? "Fliege Mono" : "Bebas Neue" }}
-            initial={{ opacity: 0 }}
             animate={{
-              opacity: 1,
               fontSize: showAnimation ? "8rem" : "4rem",
               letterSpacing: showAnimation ? "0.3em" : "0.1em",
             }}
             transition={{
-              duration: showAnimation ? 2 : 1,
-              delay: showAnimation ? 0.5 : 0.3,
+              duration: showAnimation ? 2 : 0,
+              delay: showAnimation ? 0.5 : 0,
               ease: "easeInOut",
             }}
           >
@@ -135,9 +131,6 @@ function App() {
           <motion.div
             className="mt-8 text-sm tracking-widest opacity-60"
             style={{ fontFamily: "Fliege Mono" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
-            transition={{ duration: 1, delay: 0.8 }}
           >
             LOADING...
           </motion.div>
