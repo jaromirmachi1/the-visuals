@@ -2,11 +2,19 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Lenis from "lenis";
 import GrainedBackground from "./components/GrainedBackground";
+import mockVideo from "./assets/vecteezy_black-and-white-gradient-grain-background-vintage-noise-loop_37267523.mov";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentFont, setCurrentFont] = useState(0);
-  const [showAnimation, setShowAnimation] = useState(false);
+  // removed unused showAnimation
+  const [animateToCorners, setAnimateToCorners] = useState(false);
+  const [startLeftThePx, setStartLeftThePx] = useState<number | null>(null);
+  const [startLeftVisualsPx, setStartLeftVisualsPx] = useState<number | null>(
+    null
+  );
+
+  // refs not needed; compute centered start via measured widths inside effect
 
   const fonts = [
     { class: "font-thin", family: "Bebas Neue" },
@@ -56,11 +64,6 @@ function App() {
       setCurrentFont((prev) => (prev + 1) % fonts.length);
     }, 200);
 
-    // Start animation after 2.5 seconds
-    const animationTimer = setTimeout(() => {
-      setShowAnimation(true);
-    }, 2500);
-
     // Complete loading after 3 seconds
     const completeTimer = setTimeout(() => {
       setIsLoading(false);
@@ -69,76 +72,156 @@ function App() {
     return () => {
       lenis.destroy();
       clearInterval(interval);
-      clearTimeout(animationTimer);
       clearTimeout(completeTimer);
     };
   }, []);
+
+  // When loading completes, measure centered inline widths so both spans can start
+  // exactly where the loading text was, then animate to corners.
+  useEffect(() => {
+    if (!isLoading) {
+      // Defer to next frame to ensure fonts/styles applied
+      requestAnimationFrame(() => {
+        const tempContainer = document.createElement("div");
+        tempContainer.style.position = "fixed";
+        tempContainer.style.top = "-9999px";
+        tempContainer.style.left = "-9999px";
+        tempContainer.style.fontFamily = "Bebas Neue";
+        tempContainer.style.fontWeight = "700";
+        tempContainer.style.fontSize = "4rem";
+        tempContainer.style.letterSpacing = "0.1em";
+        const theSpan = document.createElement("span");
+        theSpan.textContent = "THE";
+        const visualsSpan = document.createElement("span");
+        visualsSpan.textContent = "VISUALS";
+        tempContainer.appendChild(theSpan);
+        tempContainer.appendChild(visualsSpan);
+        document.body.appendChild(tempContainer);
+        const theWidth = theSpan.offsetWidth;
+        const visualsWidth = visualsSpan.offsetWidth;
+        document.body.removeChild(tempContainer);
+
+        const totalWidth = theWidth + visualsWidth;
+        const viewportCenterX = window.innerWidth / 2;
+        const startLeftThe = viewportCenterX - totalWidth / 2;
+        const startLeftVisuals = startLeftThe + theWidth;
+
+        setStartLeftThePx(startLeftThe);
+        setStartLeftVisualsPx(startLeftVisuals);
+
+        requestAnimationFrame(() => setAnimateToCorners(true));
+      });
+    } else {
+      setAnimateToCorners(false);
+      setStartLeftThePx(null);
+      setStartLeftVisualsPx(null);
+    }
+  }, [isLoading]);
 
   return (
     <div className="relative bg-black min-h-screen">
       <GrainedBackground />
 
-      {/* Single "The Visuals" text that animates */}
-      <motion.div
-        className="fixed inset-0 flex items-center justify-center z-50"
-        animate={{
-          y: showAnimation ? "40vh" : 0,
-        }}
-        transition={{
-          duration: showAnimation ? 2 : 0,
-          ease: showAnimation ? "easeInOut" : "linear",
-          delay: showAnimation ? 0.5 : 0,
-        }}
-      >
+      {/* Main text container */}
+      <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="text-white text-center">
-          <motion.h1
-            className="text-6xl md:text-8xl font-bold tracking-wider"
-            style={{ fontFamily: isLoading ? "Fliege Mono" : "Bebas Neue" }}
-            animate={{
-              fontSize: showAnimation ? "12rem" : "4rem",
-              letterSpacing: showAnimation ? "0.2em" : "0.1em",
-              fontWeight: showAnimation ? "900" : "700",
-            }}
-            transition={{
-              duration: showAnimation ? 2 : 0,
-              delay: showAnimation ? 0.5 : 0,
-              ease: "easeInOut",
+          {/* Center video that zooms in on reveal */}
+          {!isLoading && (
+            <motion.video
+              key="mock-video"
+              autoPlay
+              loop
+              muted
+              playsInline
+              src={mockVideo}
+              initial={{ scale: 0.8, opacity: 0, y: 16, filter: "blur(8px)" }}
+              animate={{
+                scale: [0.8, 1.05, 1],
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+              }}
+              transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute z-0 w-[72vw] max-w-[1150px] rounded-lg shadow-2xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              style={{ aspectRatio: "16 / 9" }}
+            />
+          )}
+          <h1
+            className={`text-8xl md:text-9xl font-bold tracking-wider`}
+            style={{
+              fontFamily: isLoading ? "Fliege Mono" : "Bebas Neue",
+              letterSpacing: !isLoading ? "0.1em" : "0.2em",
+              fontWeight: !isLoading ? "700" : "900",
             }}
           >
-            {isLoading ? (
-              <>
-                <span className="font-light">The</span>{" "}
-                <motion.span
-                  className={`${fonts[currentFont].class} transition-all duration-200`}
-                  style={{
-                    fontFamily: fonts[currentFont].family,
-                    fontWeight: fonts[currentFont].weight || "normal",
-                  }}
-                  key={currentFont}
-                  initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
-                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  exit={{ opacity: 0, scale: 1.2, rotate: 10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  V
-                </motion.span>
-                <span className="font-light">isuals</span>
-              </>
-            ) : (
-              "THE VISUALS"
-            )}
-          </motion.h1>
+            <span
+              className="inline-block"
+              style={{
+                position: "fixed",
+                top: animateToCorners ? "2%" : "50%",
+                left: animateToCorners
+                  ? "2%"
+                  : startLeftThePx !== null
+                  ? `${startLeftThePx}px`
+                  : "50%",
+                transform:
+                  animateToCorners || startLeftThePx !== null
+                    ? "translate(0, 0)"
+                    : "translate(-50%, -50%)",
+                transition:
+                  "top 2s ease-in-out 0.5s, left 2s ease-in-out 0.5s, transform 2s ease-in-out 0.5s",
+              }}
+            >
+              {isLoading ? (
+                <>
+                  <span className="font-light">The</span>{" "}
+                  <span
+                    className={`${fonts[currentFont].class} transition-all duration-200`}
+                    style={{
+                      fontFamily: fonts[currentFont].family,
+                      fontWeight: fonts[currentFont].weight || "normal",
+                    }}
+                    key={currentFont}
+                  >
+                    V
+                  </span>
+                  <span className="font-light">isuals</span>
+                </>
+              ) : (
+                "THE"
+              )}
+            </span>
+            <span
+              className="inline-block"
+              style={{
+                position: "fixed",
+                top: animateToCorners ? "98%" : "50%",
+                left: animateToCorners
+                  ? "98%"
+                  : startLeftVisualsPx !== null
+                  ? `${startLeftVisualsPx}px`
+                  : "50%",
+                transform: animateToCorners
+                  ? "translate(-100%, -100%)"
+                  : "translate(-50%, -50%)",
+                transition:
+                  "top 2s ease-in-out 0.5s, left 2s ease-in-out 0.5s, transform 2s ease-in-out 0.5s",
+              }}
+            >
+              {isLoading ? "" : "VISUALS"}
+            </span>
+          </h1>
 
           {isLoading && (
-            <motion.div
+            <div
               className="mt-8 text-sm tracking-widest opacity-60"
               style={{ fontFamily: "Fliege Mono" }}
             >
               LOADING...
-            </motion.div>
+            </div>
           )}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
