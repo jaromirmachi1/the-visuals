@@ -14,8 +14,8 @@ const Showcase = () => {
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacity = useTransform(
     scrollYProgress,
-    [0, 0.2, 0.8, 1],
-    [0, 0.4, 1, 0.2]
+    [0, 0.1, 0.6, 1],
+    [0, 0.6, 1, 0.3]
   );
 
   // Premium project data
