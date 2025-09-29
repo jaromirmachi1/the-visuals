@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Lenis from "lenis";
 import GrainedBackground from "./components/GrainedBackground";
@@ -13,6 +13,8 @@ function App() {
   const [startLeftVisualsPx, setStartLeftVisualsPx] = useState<number | null>(
     null
   );
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const cursorRef = useRef<HTMLDivElement>(null);
 
   // refs not needed; compute centered start via measured widths inside effect
 
@@ -45,10 +47,9 @@ function App() {
     const lenis = new Lenis({
       duration: 1.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smooth: true,
-      direction: "vertical",
-      gestureDirection: "vertical",
-      smoothTouch: false,
+      smoothWheel: true,
+      orientation: "vertical",
+      gestureOrientation: "vertical",
       touchMultiplier: 2,
     });
 
@@ -74,6 +75,16 @@ function App() {
       clearInterval(interval);
       clearTimeout(completeTimer);
     };
+  }, []);
+
+  // Mouse cursor trail effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   // When loading completes, measure centered inline widths so both spans can start
@@ -121,6 +132,27 @@ function App() {
   return (
     <div className="relative bg-black min-h-screen">
       <GrainedBackground />
+
+      {/* Orange cursor trail */}
+      <motion.div
+        ref={cursorRef}
+        className="fixed pointer-events-none z-[9999]"
+        style={{
+          left: mousePosition.x - 60,
+          top: mousePosition.y - 60,
+        }}
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.05, 0.08, 0.05],
+        }}
+        transition={{
+          duration: 0.6,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
+        <div className="w-32 h-32 bg-orange-500 rounded-full blur-sm"></div>
+      </motion.div>
 
       {/* Main text container */}
       <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -214,7 +246,7 @@ function App() {
 
           {isLoading && (
             <div
-              className="mt-8 text-sm tracking-widest opacity-60"
+              className="fixed top-[60%] left-1/2 -translate-x-1/2 text-sm tracking-widest opacity-60 z-10"
               style={{ fontFamily: "Fliege Mono" }}
             >
               LOADING...
